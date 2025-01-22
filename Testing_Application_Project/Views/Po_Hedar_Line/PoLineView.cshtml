@@ -1,0 +1,40 @@
+﻿@model IEnumerable<Testing_Application_Project.Models.Po_Line_Model>
+
+<script>
+    function GetItem(str) {
+        var str = $(str).closest("tr");
+        var productid = tr.find('.productclass').val();
+
+        let url = "Po_Hedar_Line/Product?productid=" + productid
+        const response = await fetch(url)
+        const result = await response.json()
+    }
+</script>
+<table>
+    <tr>
+        <th>Product Name</th>
+        <th>Item Name</th>
+        @*<th>Qty</th>
+        <th>Rate</th>
+        <th>GST</th>
+        <th>Get Amount</th>
+        <th>Basic Amount</th>
+        <th>Total Amount</th>*@
+    </tr>
+    
+    <tbody>
+        @foreach(var item in Model)
+            {
+              <tr>
+                 <td> @Html.DropDownListFor(m => item.product_id, new SelectList(ViewBag.supplier, "Value", "Text"), new { @class = "form-control" })</td>
+
+              </tr>
+            }
+        @for (int i = 0; i < 1; i++)
+            {
+                <tr>
+                    <td>@Html.DropDownList("item.product_id", new SelectList(ViewBag.supplier, "Value", "Text"))</td>
+                </tr>
+            }
+    </tbody>
+</table>

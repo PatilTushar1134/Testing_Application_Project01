@@ -1,0 +1,41 @@
+﻿@model Testing_Application_Project.Models.InstituteModel
+
+<h1>Institute Info</h1>
+
+@using (Html.BeginForm("SaveRecord","Institute", FormMethod.Post)){
+
+<div class="row">
+    @Html.HiddenFor(m => m.Institute_id)
+    <!--<div class="col-md-3">-->
+    @*<label>Insitute_Id</label>*@
+    <!--@Html.HiddenFor(m => m.Institute_id, new { @class = "form-control" })
+    </div>-->
+    <div class="col-md-3">
+        <label>Insitute_Name</label>
+        @Html.TextBoxFor(m => m.Institute_Name, new { @class = "form-control" })
+    </div>
+    <div class="col-md-3">
+        <label>Insitute_Contact</label>
+        @Html.TextBoxFor(m => m.Institute_Contact, new { @class = "form-control" })
+    </div>
+    <div class="col-md-3">
+        <label>Insitute_Address</label>
+        @Html.TextBoxFor(m => m.Institute_Address, new { @class = "form-control" })
+    </div>
+    <div class="col-md-3">
+        <label>Insitute_Url</label>
+        @Html.TextBoxFor(m => m.Institute_Url, new { @class = "form-control" })
+    </div>
+    <div class="col-md-3">
+        <label>Insitute_Email</label>
+        @Html.TextBoxFor(m => m.Institute_Email, new { @class = "form-control" })
+    </div>
+    <div class="col-md-3">
+        <label>Insitute_Regno</label>
+        @Html.TextBoxFor(m => m.Institute_Reg_No, new { @class = "form-control" })
+    </div>
+    <br />
+</div>
+<br />
+<button type="submit" class="btn btn-dark text-center">SAVE</button>
+}

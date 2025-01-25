@@ -1,40 +1,102 @@
 ﻿@model IEnumerable<Testing_Application_Project.Models.Po_Line_Model>
 
 <script>
-    function GetItem(str) {
-        var str = $(str).closest("tr");
-        var productid = tr.find('.productclass').val();
+   
+    async function GetItem(str) {
 
-        let url = "Po_Hedar_Line/Product?productid=" + productid
+        var tr = $(str).closest("tr");
+        var productid = tr.find('.productclass').val();
+        console.log(str)
+        let url = "/Po_Hedar_Line/Product?productid=" + productid
         const response = await fetch(url)
         const result = await response.json()
+
+        const productArray = result.listdata
+
+        //const dropdown = document.getElementById('item') ;
+        const dropdown = tr.find('.itemclass').get(0);
+        dropdown.innerHTML = "";
+        productArray.forEach(data => {
+            const option = document.createElement('option');
+            option.value = data.Value;
+            option.textContent = data.Text;
+            dropdown.appendChild(option);
+        })
     }
+        function CalculateBasicAmt(str) {
+           var tr = $(str).closest("tr");
+
+           let rate = tr.find('.classrate').val();
+           let qty = tr.find('.classqty').val();
+
+           if (qty != "" && rate != "") {
+               let basicAmount = tr.find('.basicAmount').val(qty * rate);
+           }
+       }
+
+    function TotalAmount(str) {
+        var tr = $(str).closest("tr");
+        let basicAmount = tr.find('.basicAmount').val();
+        let taxAmount = tr.find('.taxAmount').val();
+        console.log(taxAmount)
+        tr.find('.totalAmount').val(parseFloat(taxAmount) + parseFloat(basicAmount));
+    }
+
+   
+    async function GetTax(str) {
+        alert("hi")
+        var tr = $(str).closest("tr")
+        var Tax_Id = tr.find('.Tax_Id').val()
+        
+        let url = "/Po_Hedar_Line/GetTaxPercentage?taxid=" + Tax_Id
+        const response = await fetch(url)
+        const result = await response.json()
+
+        let taxpercentage = result.taxPercentage
+        let basicAmount = tr.find('.basicAmount').val()
+        let taxAmount = parseFloat(((parseFloat(basicAmount) * parseFloat(taxpercentage)) / 100))
+        let TaxAmount = tr.find('.taxAmount').val(taxAmount)
+        TotalAmount(str)
+    }
+    
 </script>
 <table>
     <tr>
         <th>Product Name</th>
         <th>Item Name</th>
-        @*<th>Qty</th>
+        <th>Qty</th>
         <th>Rate</th>
-        <th>GST</th>
-        <th>Get Amount</th>
         <th>Basic Amount</th>
-        <th>Total Amount</th>*@
-    </tr>
-    
-    <tbody>
-        @foreach(var item in Model)
-            {
-              <tr>
-                 <td> @Html.DropDownListFor(m => item.product_id, new SelectList(ViewBag.supplier, "Value", "Text"), new { @class = "form-control" })</td>
+        <th>GST</th>
+        <th>Tax Amount</th>
+        <th>Total Amount</th>
 
-              </tr>
-            }
-        @for (int i = 0; i < 1; i++)
-            {
-                <tr>
-                    <td>@Html.DropDownList("item.product_id", new SelectList(ViewBag.supplier, "Value", "Text"))</td>
-                </tr>
-            }
+    </tr>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td> @Html.DropDownListFor(m => item.product_id, new SelectList(ViewBag.product, "Value", "Text"))</td>
+                <td><select id="item"></select></td>
+                
+            </tr>
+        }
+        @for (int i = 0; i < 2; i++)
+        {
+            <tr>
+                <td>
+                    @Html.DropDownList("item.product_id", new SelectList(ViewBag.product, "Value", "Text"), new{
+                     id = "productid", @class = "productclass", OnChange = "GetItem(this)" })
+                </td>
+                <td><select id="item" class="itemclass"></select></td>
+                <td>@Html.TextBox("item.qty","",new { @class = "classqty", OnChange = "CalculateBasicAmt(this)", id = "qty" })</td>
+                <td>@Html.TextBox("item.rate", "", new {@class="classrate",OnChange= "CalculateBasicAmt(this)", id="rate"})</td>
+                <td>@Html.TextBox("item.basicAmount", "", new {@class= "basicAmount" })</td>
+                <td>@Html.DropDownList("item.tax_id", new SelectList(ViewBag.tax, "Value", "Text"), new {@class="Tax_Id", OnChange = "GetTax(this)" })</td>
+                <td>@Html.TextBox("item.taxAmount", "", new {@class= "taxAmount" })</td>
+                <td>@Html.TextBox("item.totalAmount", "", new {@class= "totalAmount" })</td>
+            </tr>
+        }
     </tbody>
+  
 </table>

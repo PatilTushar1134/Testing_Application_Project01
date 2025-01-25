@@ -16,8 +16,10 @@ namespace Testing_Application_Project.Controllers
         {
             string product = "select product_id as [Value], product_name as [Text] from Product_tbl";
             string supplier = "select supplier_id as [Value], supplier_name as [Text] from supplier_tbl";
+            string tax = "select tax_id as [Value],tax_name as[Text] from tax_tbl";
             ViewBag.supplier = AllDDL(supplier);
             ViewBag.product = AllDDL(product);
+            ViewBag.tax=AllDDL(tax);
 
             var Hedar = new Po_Hedar_Model();
             var Line = new List<Po_Line_Model>();
@@ -54,7 +56,7 @@ namespace Testing_Application_Project.Controllers
         }
         public JsonResult Product(int productid)
         {
-            string item = "select product_id as [Value], product_name as [Text] from Product_tbl where product_id=" + productid;
+            string item = "select item_id as [Value], item_name as [Text] from item_tbl where product_id=" + productid;
             var _selectlist = new List<SelectListItem>();
             _selectlist.Add(new SelectListItem { Text = "--SELECT", Value = "0" });
             ClsFunction cls = new ClsFunction();
@@ -64,6 +66,17 @@ namespace Testing_Application_Project.Controllers
                 _selectlist.Add(new SelectListItem { Text = dt.Rows[i]["Text"].ToString(), Value =dt.Rows[i]["Value"].ToString() });
             }
             var res = new { listdata= _selectlist };
+            return Json(res, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult GetTaxPercentage(int taxid)
+        {
+            string taxQry = "select tax_percentage from tax_tbl where tax_id=" + taxid;
+
+            ClsFunction clsfn = new ClsFunction();
+            DataTable dt = clsfn.FetchQry(taxQry);
+
+            decimal taxPercentage = Convert.ToDecimal(dt.Rows[0]["tax_percentage"]);
+            var res = new { taxPercentage = taxPercentage };
             return Json(res, JsonRequestBehavior.AllowGet);
         }
         public ActionResult PoHedarView()
